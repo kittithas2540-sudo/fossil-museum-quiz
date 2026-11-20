@@ -184,7 +184,7 @@ function resetTestStatistics() {
     archiveRecords_(ss,records,'ล้างสถิติทดสอบ');
     excludeRecords_(ss,records,'ล้างสถิติทดสอบ ไม่ซิงก์กลับ');
     // Also exclude older Firebase players whose Sheet rows were already manually deleted.
-    const base=PropertiesService.getScriptProperties().getProperty('FIREBASE_DATABASE_URL').replace(/\\/+$/,'');
+    const base=PropertiesService.getScriptProperties().getProperty('FIREBASE_DATABASE_URL').replace(/\/+$/,'');
     const response=UrlFetchApp.fetch(base+'/rooms.json?access_token='+encodeURIComponent(firebaseAccessToken_()),{muteHttpExceptions:true});
     if(response.getResponseCode()!==200) throw new Error('อ่าน Firebase ไม่สำเร็จ: HTTP '+response.getResponseCode());
     const rooms=JSON.parse(response.getContentText())||{};
@@ -209,7 +209,7 @@ function permanentlyDeleteSelectedVisitors() {
   try {
     const {ss,sheet,records}=selectedRecords_();
     const props=PropertiesService.getScriptProperties();
-    const base=props.getProperty('FIREBASE_DATABASE_URL').replace(/\\/+$/,'');
+    const base=props.getProperty('FIREBASE_DATABASE_URL').replace(/\/+$/,'');
     const token=firebaseAccessToken_();
     // Exclude first so a failed/deferred sync cannot re-add removed rows.
     excludeRecords_(ss,records,'ลบถาวรโดยผู้ดูแล');
