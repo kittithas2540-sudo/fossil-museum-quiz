@@ -11,7 +11,7 @@ function setupFossilSync() {
   if (!props.getProperty('FIREBASE_SERVICE_ACCOUNT_JSON')) throw new Error('Missing FIREBASE_SERVICE_ACCOUNT_JSON in Script Properties');
   if (!props.getProperty('FIREBASE_DATABASE_URL')) throw new Error('Missing FIREBASE_DATABASE_URL');
   if (!props.getProperty('SPREADSHEET_ID')) throw new Error('Missing SPREADSHEET_ID');
-  ScriptApp.getProjectTriggers().filter(t => t.getHandlerFunction() === 'syncFossilVisitors').forEach(ScriptApp.deleteTrigger);
+  ScriptApp.getProjectTriggers().filter(t => t.getHandlerFunction() === 'syncFossilVisitors').forEach(trigger => ScriptApp.deleteTrigger(trigger));
   ScriptApp.newTrigger('syncFossilVisitors').timeBased().everyMinutes(5).create();
   syncFossilVisitors();
 }
