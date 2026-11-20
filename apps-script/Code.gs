@@ -178,8 +178,7 @@ function resetTestStatistics() {
   try {
     const {ss,sheet}=adminContext_();
     const count=sheet.getLastRow()-1;
-    if(count<=0) {console.log('No records to reset');return;}
-    const records=sheet.getRange(2,1,count,COLUMNS).getValues().map((values,i)=>({number:i+2,values,key:String(values[10]||'')}));
+    const records=count>0?sheet.getRange(2,1,count,COLUMNS).getValues().map((values,i)=>({number:i+2,values,key:String(values[10]||'')})):[];
     if(records.some(r=>!/^\\d{6}:[^:]+$/.test(r.key)))
       throw new Error('มีข้อมูลนำเข้าด้วยมือที่ไม่มีคีย์ซิงก์ กรุณาจัดการแถวเหล่านั้นแยกต่างหาก');
     archiveRecords_(ss,records,'ล้างสถิติทดสอบ');
@@ -194,8 +193,8 @@ function resetTestStatistics() {
       if(/^\\d{6}$/.test(pin)) for(const uid of Object.keys((room||{}).players||{}))
         historical.push({key:pin+':'+uid});
     excludeRecords_(ss,historical,'ล้างสถิติทดสอบ รวมข้อมูลที่เคยลบจากชีต');
-    sheet.deleteRows(2,count);
-    console.log('Reset '+count+' test rows; all archived and excluded from re-import');
+    if(count>0) sheet.deleteRows(2,count);
+    console.log('Reset '+count+' test rows; excluded '+historical.length+' Firebase player records from re-import');
   } finally {lock.releaseLock();}
 }
 
