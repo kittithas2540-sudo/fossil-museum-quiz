@@ -184,6 +184,16 @@ function resetTestStatistics() {
       throw new Error('มีข้อมูลนำเข้าด้วยมือที่ไม่มีคีย์ซิงก์ กรุณาจัดการแถวเหล่านั้นแยกต่างหาก');
     archiveRecords_(ss,records,'ล้างสถิติทดสอบ');
     excludeRecords_(ss,records,'ล้างสถิติทดสอบ ไม่ซิงก์กลับ');
+    // Also exclude older Firebase players whose Sheet rows were already manually deleted.
+    const base=PropertiesService.getScriptProperties().getProperty('FIREBASE_DATABASE_URL').replace(/\\/+$/,'');
+    const response=UrlFetchApp.fetch(base+'/rooms.json?access_token='+encodeURIComponent(firebaseAccessToken_()),{muteHttpExceptions:true});
+    if(response.getResponseCode()!==200) throw new Error('อ่าน Firebase ไม่สำเร็จ: HTTP '+response.getResponseCode());
+    const rooms=JSON.parse(response.getContentText())||{};
+    const historical=[];
+    for(const [pin,room] of Object.entries(rooms))
+      if(/^\\d{6}$/.test(pin)) for(const uid of Object.keys((room||{}).players||{}))
+        historical.push({key:pin+':'+uid});
+    excludeRecords_(ss,historical,'ล้างสถิติทดสอบ รวมข้อมูลที่เคยลบจากชีต');
     sheet.deleteRows(2,count);
     console.log('Reset '+count+' test rows; all archived and excluded from re-import');
   } finally {lock.releaseLock();}
