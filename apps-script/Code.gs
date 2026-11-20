@@ -122,7 +122,7 @@ function selectedRecords_() {
   const first=selection.getRow(), count=selection.getNumRows();
   const rows=sheet.getRange(first,1,count,COLUMNS).getValues();
   const result=rows.map((values,i)=>({number:first+i,values,key:String(values[10]||'')}));
-  if (result.some(x=>!/^\\d{6}:[^:]+$/.test(x.key)))
+  if (result.some(x=>!/^\d{6}:[^:]+$/.test(x.key)))
     throw new Error('มีแถวที่ไม่มีคีย์ซิงก์ PIN:UID กรุณาเลือกเฉพาะข้อมูลที่ซิงก์อัตโนมัติ');
   return {ss,sheet,records:result};
 }
@@ -179,7 +179,7 @@ function resetTestStatistics() {
     const {ss,sheet}=adminContext_();
     const count=sheet.getLastRow()-1;
     const records=count>0?sheet.getRange(2,1,count,COLUMNS).getValues().map((values,i)=>({number:i+2,values,key:String(values[10]||'')})):[];
-    if(records.some(r=>!/^\\d{6}:[^:]+$/.test(r.key)))
+    if(records.some(r=>!/^\d{6}:[^:]+$/.test(r.key)))
       throw new Error('มีข้อมูลนำเข้าด้วยมือที่ไม่มีคีย์ซิงก์ กรุณาจัดการแถวเหล่านั้นแยกต่างหาก');
     archiveRecords_(ss,records,'ล้างสถิติทดสอบ');
     excludeRecords_(ss,records,'ล้างสถิติทดสอบ ไม่ซิงก์กลับ');
@@ -190,7 +190,7 @@ function resetTestStatistics() {
     const rooms=JSON.parse(response.getContentText())||{};
     const historical=[];
     for(const [pin,room] of Object.entries(rooms))
-      if(/^\\d{6}$/.test(pin)) for(const uid of Object.keys((room||{}).players||{}))
+      if(/^\d{6}$/.test(pin)) for(const uid of Object.keys((room||{}).players||{}))
         historical.push({key:pin+':'+uid});
     excludeRecords_(ss,historical,'ล้างสถิติทดสอบ รวมข้อมูลที่เคยลบจากชีต');
     if(count>0) sheet.deleteRows(2,count);
