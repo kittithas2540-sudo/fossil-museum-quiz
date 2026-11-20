@@ -47,7 +47,7 @@ function syncFossilVisitors() {
     const base = props.getProperty('FIREBASE_DATABASE_URL').replace(/\/+$/,'');
     if (!/^https:\/\/[a-z0-9.-]+\.firebasedatabase\.app$/i.test(base) &&
         !/^https:\/\/[a-z0-9.-]+\.firebaseio\.com$/i.test(base)) throw new Error('Invalid Firebase database URL');
-    const response = UrlFetchApp.fetch(base+'/rooms.json?auth='+encodeURIComponent(firebaseAccessToken_()),{muteHttpExceptions:true});
+    const response = UrlFetchApp.fetch(base+'/rooms.json?access_token='+encodeURIComponent(firebaseAccessToken_()),{muteHttpExceptions:true});
     if (response.getResponseCode() !== 200) throw new Error('Firebase read failed: HTTP '+response.getResponseCode());
     const rooms = JSON.parse(response.getContentText()) || {};
     const last = sheet.getLastRow();
