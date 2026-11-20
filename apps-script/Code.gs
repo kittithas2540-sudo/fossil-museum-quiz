@@ -1,6 +1,6 @@
 /**
  * FOSSIL MUSEUM QUIZ → Google Sheets
- * Server-side scheduled synchronization. NEVER place service-account credentials in GitHub.
+ * Server-side scheduled synchronization (every 5 minutes). NEVER place service-account credentials in GitHub.
  * Setup: see docs/GOOGLE_SHEETS_SYNC.md
  */
 const SHEET_NAME = 'ข้อมูลผู้เข้าร่วม';
@@ -12,7 +12,7 @@ function setupFossilSync() {
   if (!props.getProperty('FIREBASE_DATABASE_URL')) throw new Error('Missing FIREBASE_DATABASE_URL');
   if (!props.getProperty('SPREADSHEET_ID')) throw new Error('Missing SPREADSHEET_ID');
   ScriptApp.getProjectTriggers().filter(t => t.getHandlerFunction() === 'syncFossilVisitors').forEach(ScriptApp.deleteTrigger);
-  ScriptApp.newTrigger('syncFossilVisitors').timeBased().everyMinutes(15).create();
+  ScriptApp.newTrigger('syncFossilVisitors').timeBased().everyMinutes(5).create();
   syncFossilVisitors();
 }
 
